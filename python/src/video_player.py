@@ -243,7 +243,32 @@ class VideoPlayer:
         Args:
             search_term: The query to be used in search.
         """
-        print("search_videos needs implementation")
+        all_videos = self._video_library.get_all_videos()
+        search_results = {}
+        for video in all_videos:
+            if not video.title.lower().find(search_term.lower()) == -1:
+                search_results[video.title] = video
+
+        search_results = {key: value for key, value in sorted(search_results.items())}
+
+        if search_results:
+            print(f"Here are the results for {search_term}:")
+            for i, video in enumerate(search_results.items()):
+                print(f"{i+1}) {video[1].title} ({video[1].video_id}) [{' '.join(video[1].tags)}]", end="\n")
+            print("Would you like to play any of the above? If yes, specify the number of the video.")
+            print("If your answer is not a valid number, we will assume it's a no.")
+            idx = input("\n")
+            # print(idx)
+            try:
+                idx = int(idx)
+                if (idx-1) in range(len(search_results)):
+                    self.play_video(list(search_results.items())[idx-1][1].video_id)
+                    print(f"Playing video: {list(search_results.items())[idx-1][1].title}")
+            except ValueError:
+                pass
+        else:
+            print(f"No search results for {search_term}")
+ 
 
     def search_videos_tag(self, video_tag):
         """Display all videos whose tags contains the provided tag.
@@ -251,7 +276,31 @@ class VideoPlayer:
         Args:
             video_tag: The video tag to be used in search.
         """
-        print("search_videos_tag needs implementation")
+        all_videos = self._video_library.get_all_videos()
+        search_results = {}
+        for video in all_videos:
+            if video_tag.lower() in video.tags:
+                search_results[video.title] = video
+
+        search_results = {key: value for key, value in sorted(search_results.items())}
+
+        if search_results:
+            print(f"Here are the results for {video_tag}:")
+            for i, video in enumerate(search_results.items()):
+                print(f"{i+1}) {video[1].title} ({video[1].video_id}) [{' '.join(video[1].tags)}]")
+            print("Would you like to play any of the above? If yes, specify the number of the video.")
+            print("If your answer is not a valid number, we will assume it's a no.")
+            idx = input("")
+            # print(idx)
+            try:
+                idx = int(idx)
+                if (idx-1) in range(len(search_results)):
+                    self.play_video(list(search_results.items())[idx-1][1].video_id)
+                    print(f"Playing video: {list(search_results.items())[idx-1][1].title}")
+            except ValueError:
+                pass
+        else:
+            print(f"No search results for {video_tag}")
 
     def flag_video(self, video_id, flag_reason=""):
         """Mark a video as flagged.
