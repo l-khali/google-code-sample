@@ -27,6 +27,7 @@ class VideoLibrary:
                     url,
                     [tag.strip() for tag in tags.split(",")] if tags else [],
                 )
+        self._playlists = {}
 
     def get_all_videos(self):
         """Returns all available video information from the video library."""
@@ -43,3 +44,19 @@ class VideoLibrary:
             does not exist.
         """
         return self._videos.get(video_id, None)
+
+    def get_all_playlists(self):
+        """Returns all available playlist information from the video library."""
+        return list(self._playlists.values())
+
+    def get_playlist(self, playlist_name):
+        """Returns the playlist object from the video library.
+
+        Args:
+            playlist_name: The playlist name.
+
+        Returns:
+            The Playlist object for the requested name. None if the playlist
+            does not exist.
+        """
+        return self._playlists.get(playlist_name, None) 
