@@ -118,7 +118,7 @@ class VideoPlayer:
         if playlist_name.lower() in self.playlists_lower:
             print("Cannot create playlist: A playlist with the same name already exists")
         else:
-            self.playlists[playlist_name] = Playlist(playlist_name)
+            self.playlists[playlist_name.lower()] = Playlist(playlist_name)
             self.playlists_lower.append(playlist_name.lower())
             print(f"Successfully created new playlist: {playlist_name}")
 
@@ -130,27 +130,38 @@ class VideoPlayer:
             playlist_name: The playlist name.
             video_id: The video_id to be added.
         """
-        playlist = self.playlists.get(playlist_name, None)
-        video = self._video_library.get_video(video_id, None)
+        # playlist = self.playlists.get(playlist_name, None)
+        # video = self._video_library.get_video(video_id, None)
 
-        # if not playlist_name.lower() in self.playlists_lower:
-        #     print("Cannot add video to {playlist_name}: Playlist does not exist")
-        # else:
-        #     video = self._video_library.get_video(video_id)
+        if not playlist_name.lower() in self.playlists_lower:
+            print("Cannot add video to {playlist_name}: Playlist does not exist")
+        else:
+            video = self._video_library.get_video(video_id)
+            if video:
+                if video in self.playlists[playlist_name.lower()].videos:
+                    print(f"Cannot add video to {playlist_name}: Video already added")
+                else:
+                    playlist = self.playlists[playlist_name.lower()]
+                    playlist.videos.append(video)
+                    print(f"Added video to {playlist_name}: {video.title}")
+            else:
+                print(f"Cannot add video to {playlist_name}: Video does not exist")
+        # # else:
+        # #     video = self._video_library.get_video(video_id)
+        # #     if video:
+        # #         playlist = self._video_library.get_playlist(playlist_name)
+        # #         playlist.videos.append(video)
+        # #         print(f"Added video to {playlist_name}: {video.title}")
+        # #     else:
+        # #         print(f"Cannot add video to {playlist_name}: Video does not exist")
+        # if playlist:
         #     if video:
-        #         playlist = self._video_library.get_playlist(playlist_name)
         #         playlist.videos.append(video)
         #         print(f"Added video to {playlist_name}: {video.title}")
         #     else:
         #         print(f"Cannot add video to {playlist_name}: Video does not exist")
-        if playlist:
-            if video:
-                playlist.videos.append(video)
-                print(f"Added video to {playlist_name}: {video.title}")
-            else:
-                print(f"Cannot add video to {playlist_name}: Video does not exist")
-        else:
-            print("Cannot add video to {playlist_name}: Playlist does not exist")
+        # else:
+        #     print("Cannot add video to {playlist_name}: Playlist does not exist")
 
     def show_all_playlists(self):
         """Display all playlists."""
